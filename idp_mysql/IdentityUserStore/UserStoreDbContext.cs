@@ -9,7 +9,7 @@ namespace idp_mysql.IdentityUserStore
     public class UserStoreDbContext : DbContext
     {
         #region initialize
-        public UserStoreDbContext(DbContextOptions options): base(options)
+        public UserStoreDbContext(DbContextOptions<UserStoreDbContext> options): base(options)
         {
 
         }

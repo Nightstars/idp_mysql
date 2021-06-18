@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using IdentityServerHost.Quickstart.UI;
 using System.Reflection;
+using idp_mysql.IdentityUserStore;
 
 namespace idp_mysql
 {
@@ -42,7 +43,12 @@ namespace idp_mysql
                 // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
                 options.EmitStaticAudienceClaim = true;
             })
-                .AddTestUsers(TestUsers.Users)
+                //.AddTestUsers(TestUsers.Users)
+                .AddUserStore(options=> {
+                    options.UseMySql(connectionString,
+                        new MySqlServerVersion(new System.Version(Configuration.GetSection("ConnectionStrings")["DbVersion"])),
+                        b =>b.MigrationsAssembly(migrationsAssembly));
+                })
                 // this adds the config data from DB (clients, resources, CORS)
                 .AddConfigurationStore(options =>
                 {
@@ -84,6 +90,9 @@ namespace idp_mysql
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
             }
+
+            //SeedUserData
+            SeedUser.SeedData(app);
 
             app.UseStaticFiles();
 

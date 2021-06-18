@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using IdentityServer4.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +34,7 @@ namespace idp_mysql.IdentityUserStore
         #region validate password
         public bool ValidateCredentials(string username,string password)
         {
-            //password=Config.
+            password = password.Sha256();
             var user = _userStoreDbContext.identityUser.Where(x => x.Username.Equals(username) && x.Password.Equals(password)).Include(x => x.IdentityUserClaims).SingleOrDefault();
             return user != null;
         }
